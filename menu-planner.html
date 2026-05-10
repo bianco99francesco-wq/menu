@@ -716,15 +716,32 @@ function saveRecipe() {
 }
 
 // ── LISTA SPESA ──
+function scaleQty(qty, mult) {
+  if (!qty) return '';
+  const match = qty.match(/^([0-9]+\.?[0-9]*)\s*(.*)$/);
+  if (match) {
+    const num = parseFloat(match[1]) * mult;
+    const unit = match[2];
+    const rounded = Math.round(num * 10) / 10;
+    return rounded + (unit ? ' ' + unit : '');
+  }
+  return qty; // non-numeric (q.b. ecc.)
+}
+
 function generateSpesaFromMenu() {
   const ingredientsMap = {};
   DAYS.forEach(day => MEALS.forEach(meal => {
     const r = menu[day][meal];
     if (r && r.ingredients && r.ingredients.length) {
+      const basePersone = r.persone || 4;
+      const savedPersone = (r.id && personeMap[r.id]) ? personeMap[r.id] : basePersone;
+      const mult = savedPersone / basePersone;
       r.ingredients.forEach(ing => {
         const ingObj = typeof ing === 'string' ? {name: ing, qty: ''} : ing;
         const key = ingObj.name.toLowerCase().trim();
-        if (!ingredientsMap[key]) ingredientsMap[key] = ingObj;
+        if (!ingredientsMap[key]) {
+          ingredientsMap[key] = { name: ingObj.name, qty: scaleQty(ingObj.qty, mult) };
+        }
       });
     }
   }));
