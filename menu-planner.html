@@ -599,7 +599,7 @@ function openDetail(id) {
   document.getElementById('detailTime').textContent = '⏱ ' + r.time + ' minuti';
   document.getElementById('detailInstructions').textContent = r.instructions;
   const basePersone = r.persone || 4;
-  let currentPersone = (r.id && personeMap[r.id]) ? personeMap[r.id] : basePersone;
+  let currentPersone = (r.id && personeMap[String(r.id)]) ? personeMap[String(r.id)] : basePersone;
   function renderIngredients() {
     const mult = currentPersone / basePersone;
     document.getElementById('detailIngredients').innerHTML = r.ingredients.map(i => {
@@ -620,7 +620,10 @@ function openDetail(id) {
   document.getElementById('detailPersoneMinus').onclick = () => { if (currentPersone > 1) { currentPersone--; renderIngredients(); } };
   document.getElementById('detailPersonePlus').onclick  = () => { currentPersone++; renderIngredients(); };
   document.getElementById('btnConfirmPersone').onclick = () => {
-    if (r.id) { personeMap[r.id] = currentPersone; save(); }
+    if (r.id) {
+      personeMap[String(r.id)] = currentPersone;
+      save();
+    }
     showToast('Porzioni salvate: ' + currentPersone + ' persone');
     document.getElementById('detailModal').classList.remove('open');
   };
@@ -734,7 +737,7 @@ function generateSpesaFromMenu() {
     const r = menu[day][meal];
     if (r && r.ingredients && r.ingredients.length) {
       const basePersone = r.persone || 4;
-      const savedPersone = (r.id && personeMap[r.id]) ? personeMap[r.id] : basePersone;
+      const savedPersone = (r.id && personeMap[String(r.id)]) ? personeMap[String(r.id)] : basePersone;
       const mult = savedPersone / basePersone;
       r.ingredients.forEach(ing => {
         const ingObj = typeof ing === 'string' ? {name: ing, qty: ''} : ing;
