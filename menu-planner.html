@@ -70,7 +70,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 32px 20px; }
 .recipe-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
 .recipe-card .card-emoji { font-size: 44px; margin-bottom: 12px; }
 .recipe-card .cat { font-size: 11px; color: #F59E0B; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
-.recipe-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; padding-right: 28px; color: #2C1810; }
+.recipe-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; padding-right: 60px; color: #2C1810; }
 .recipe-card .meta { font-size: 13px; color: #666; }
 .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
 .tag { font-size: 13px; background: #FFF8F0; padding: 3px 10px; border-radius: 10px; color: #A0522D; }
@@ -665,12 +665,16 @@ function renderRecipes() {
     card.className = 'recipe-card';
     card.innerHTML = '<div class="card-emoji">' + r.emoji + '</div><div class="cat">' + r.category + '</div><h3>' + r.name + '</h3><div class="meta">⏱ ' + r.time + ' min · 👤 ' + (r.persone||4) + ' pers. · ' + r.ingredients.length + ' ingredienti</div><div class="tags">' + r.ingredients.slice(0,3).map(i => '<span class="tag">' + i.name + '</span>').join('') + (r.ingredients.length > 3 ? '<span style="font-size:11px;color:#AAA">+' + (r.ingredients.length-3) + '</span>' : '') + '</div>';
     const delBtn = document.createElement('button');
-    delBtn.className = 'delete-recipe-btn'; delBtn.title = 'Elimina ricetta'; delBtn.textContent = '🗑️';
-    delBtn.style.right = '10px';
+    delBtn.title = 'Elimina ricetta'; delBtn.textContent = '🗑️';
+    delBtn.style.cssText = 'position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;font-size:16px;padding:4px;color:#CCC;transition:color 0.15s;z-index:2';
+    delBtn.addEventListener('mouseenter', () => delBtn.style.color = '#e53e3e');
+    delBtn.addEventListener('mouseleave', () => delBtn.style.color = '#CCC');
     delBtn.addEventListener('click', e => { e.stopPropagation(); deleteRecipe(r.id); });
     const editBtn = document.createElement('button');
-    editBtn.className = 'delete-recipe-btn'; editBtn.title = 'Modifica ricetta'; editBtn.textContent = '✏️';
-    editBtn.style.right = '36px';
+    editBtn.title = 'Modifica ricetta'; editBtn.textContent = '✏️';
+    editBtn.style.cssText = 'position:absolute;top:10px;right:38px;background:none;border:none;cursor:pointer;font-size:16px;padding:4px;color:#CCC;transition:color 0.15s;z-index:2';
+    editBtn.addEventListener('mouseenter', () => editBtn.style.color = '#2C1810');
+    editBtn.addEventListener('mouseleave', () => editBtn.style.color = '#CCC');
     editBtn.addEventListener('click', e => { e.stopPropagation(); openEditForm(r.id); });
     card.appendChild(editBtn);
     card.appendChild(delBtn);
